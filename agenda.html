@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda Diaria</title>
+  <link rel="stylesheet" href="agenda.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <!-- Controles de tema y fondo -->
+  <div class="theme-controls">
+    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">
+      <i class="fas fa-moon"></i>
+    </button>
+    <button id="backgroundToggle" class="background-toggle" onclick="toggleBackgroundGallery()">
+      <i class="fas fa-palette"></i>
+    </button>
+    <button class="btn-primary go-to-index-btn" onclick="window.location.href='index.html'">
+      <i class="fas fa-home"></i> Volver al inicio
+    </button>
+  </div>
+  <!-- Galería de fondos -->
+  <div id="backgroundGallery" class="background-gallery hidden">
+    <div class="gallery-header">
+      <h3>Personalizar Fondo</h3>
+      <button onclick="closeBackgroundGallery()" class="close-btn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="background-options">
+      <div class="option-group">
+        <h4>Hora del día</h4>
+        <div class="background-grid">
+          <div class="bg-option" data-bg="sunrise" onclick="setBackground('sunrise')">
+            <div class="bg-preview sunrise-preview"></div>
+            <span>Amanecer</span>
+          </div>
+          <div class="bg-option" data-bg="day" onclick="setBackground('day')">
+            <div class="bg-preview day-preview"></div>
+            <span>Día</span>
+          </div>
+          <div class="bg-option" data-bg="sunset" onclick="setBackground('sunset')">
+            <div class="bg-preview sunset-preview"></div>
+            <span>Atardecer</span>
+          </div>
+          <div class="bg-option" data-bg="night" onclick="setBackground('night')">
+            <div class="bg-preview night-preview"></div>
+            <span>Noche</span>
+          </div>
+        </div>
+      </div>
+      <div class="option-group">
+        <h4>Gradientes personalizados</h4>
+        <div class="background-grid">
+          <div class="bg-option" data-bg="gradient1" onclick="setBackground('gradient1')">
+            <div class="bg-preview gradient1-preview"></div>
+            <span>Océano</span>
+          </div>
+          <div class="bg-option" data-bg="gradient2" onclick="setBackground('gradient2')">
+            <div class="bg-preview gradient2-preview"></div>
+            <span>Bosque</span>
+          </div>
+          <div class="bg-option" data-bg="gradient3" onclick="setBackground('gradient3')">
+            <div class="bg-preview gradient3-preview"></div>
+            <span>Púrpura</span>
+          </div>
+          <div class="bg-option" data-bg="gradient4" onclick="setBackground('gradient4')">
+            <div class="bg-preview gradient4-preview"></div>
+            <span>Dorado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mascota espiritual -->
+  <div class="monk-section">
+    <div id="monkCharacter" class="monk-character">
+      <svg id="monkSVG" width="120" height="140" viewBox="0 0 120 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Aura (accesorio, oculto por defecto) -->
+        <ellipse id="aura" cx="60" cy="90" rx="48" ry="30" fill="gold" opacity="0.18" style="display:none;"/>
+        <!-- Piernas cruzadas -->
+        <ellipse cx="60" cy="120" rx="32" ry="12" fill="#c49a6c"/>
+        <ellipse cx="60" cy="128" rx="22" ry="7" fill="#bfa14a"/>
+        <!-- Túnica inferior -->
+        <ellipse cx="60" cy="110" rx="26" ry="14" fill="#e17055"/>
+        <!-- Cuerpo -->
+        <ellipse cx="60" cy="85" rx="18" ry="28" fill="#e17055"/>
+        <!-- Brazos/manos -->
+        <ellipse cx="44" cy="105" rx="7" ry="13" fill="#f7d6b3" transform="rotate(-18 44 105)"/>
+        <ellipse cx="76" cy="105" rx="7" ry="13" fill="#f7d6b3" transform="rotate(18 76 105)"/>
+        <ellipse cx="52" cy="116" rx="6" ry="4" fill="#f7d6b3"/>
+        <ellipse cx="68" cy="116" rx="6" ry="4" fill="#f7d6b3"/>
+        <!-- Cabeza -->
+        <ellipse cx="60" cy="54" rx="28" ry="28" fill="#f7d6b3"/>
+        <!-- Orejas -->
+        <ellipse cx="32" cy="60" rx="5" ry="8" fill="#f7d6b3"/>
+        <ellipse cx="88" cy="60" rx="5" ry="8" fill="#f7d6b3"/>
+        <!-- Cara: ojos -->
+        <ellipse cx="50" cy="58" rx="2.5" ry="3" fill="#333"/>
+        <ellipse cx="70" cy="58" rx="2.5" ry="3" fill="#333"/>
+        <!-- Cara: sonrisa -->
+        <path d="M54 68 Q60 74 66 68" stroke="#333" stroke-width="2" fill="none"/>
+        <!-- Túnica superior -->
+        <ellipse cx="60" cy="78" rx="14" ry="16" fill="#d35400"/>
+        <!-- Detalle túnica -->
+        <ellipse cx="60" cy="95" rx="7" ry="3" fill="#b84d00"/>
+      </svg>
+      <div id="monkAccessories"></div>
+    </div>
+    <div class="monk-info">
+      <div class="monk-points">
+        <i class="fas fa-star"></i> <span id="monkPoints">0</span> puntos
+      </div>
+      <div class="monk-message" id="monkMessage">¡Bienvenido! Agrega tu primera tarea.</div>
+      <button class="btn-secondary" onclick="openShop()">
+        <i class="fas fa-store"></i> Tienda de accesorios
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal para agregar tarea -->
+  <div id="addTaskModal" class="add-task-modal hidden">
+    <div class="add-task-modal-content">
+      <h3>Agregar nueva tarea</h3>
+      <input type="text" id="modalTaskInput" placeholder="Escribe tu tarea..." maxlength="80" />
+      <select id="modalEmojiInput">
+        <option value="🫖">🫖</option>
+        <option value="🍳">🍳</option>
+        <option value="🦷">🦷</option>
+        <option value="💧">💧</option>
+        <option value="⏰">⏰</option>
+        <option value="🧘">🧘</option>
+        <option value="🥗">🥗</option>
+        <option value="🚶">🚶</option>
+      </select>
+      <button class="btn-primary" onclick="confirmAddTask()">Agregar</button>
+      <button class="btn-secondary" onclick="closeAddTaskModal()">Cancelar</button>
+    </div>
+  </div>
+  <!-- Botón flotante -->
+  <button class="fab-add-task" onclick="openAddTaskModal()">
+    <i class="fas fa-plus"></i>
+  </button>
+  <!-- Lista de tareas -->
+  <ul id="taskList" class="task-list"></ul>
+  <div id="motivationalPhrase" class="motivational-phrase"></div>
+
+  <!-- Modal tienda de accesorios -->
+  <div id="shopModal" class="shop-modal hidden">
+    <div class="shop-modal-content">
+      <div class="shop-header">
+        <h3>Tienda de Accesorios</h3>
+        <button onclick="closeShop()" class="close-btn"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="shopItems" class="shop-items"></div>
+    </div>
+  </div>
+
+  <!-- Eliminar la barra de navegación inferior agenda-nav y sus botones -->
+  <script src="agenda.js"></script>
+</body>
+</html>

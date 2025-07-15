@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pregunta del Dinero Diaria</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="particles"></div>
+  <div class="background-overlay"></div>
+
+  <!-- Controles de tema -->
+  <div class="theme-controls">
+    <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">
+      <i class="fas fa-moon"></i>
+    </button>
+    <button id="backgroundToggle" class="background-toggle" onclick="toggleBackgroundGallery()">
+      <i class="fas fa-palette"></i>
+    </button>
+    <button id="statsToggle" class="stats-toggle" onclick="toggleStats()">
+      <i class="fas fa-chart-bar"></i>
+    </button>
+    <button class="btn-primary go-to-agenda-btn" style="margin-left: 10px;" onclick="window.location.href='agenda.html'">
+      <i class="fas fa-calendar-check"></i> Ir a Agenda
+    </button>
+  </div>
+
+  <!-- Galería de fondos -->
+  <div id="backgroundGallery" class="background-gallery hidden">
+    <div class="gallery-header">
+      <h3>Personalizar Fondo</h3>
+      <button onclick="closeBackgroundGallery()" class="close-btn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="background-options">
+      <div class="option-group">
+        <h4>Hora del día</h4>
+        <div class="background-grid">
+          <div class="bg-option" data-bg="sunrise" onclick="setBackground('sunrise')">
+            <div class="bg-preview sunrise-preview"></div>
+            <span>Amanecer</span>
+          </div>
+          <div class="bg-option" data-bg="day" onclick="setBackground('day')">
+            <div class="bg-preview day-preview"></div>
+            <span>Día</span>
+          </div>
+          <div class="bg-option" data-bg="sunset" onclick="setBackground('sunset')">
+            <div class="bg-preview sunset-preview"></div>
+            <span>Atardecer</span>
+          </div>
+          <div class="bg-option" data-bg="night" onclick="setBackground('night')">
+            <div class="bg-preview night-preview"></div>
+            <span>Noche</span>
+          </div>
+        </div>
+      </div>
+      <div class="option-group">
+        <h4>Gradientes personalizados</h4>
+        <div class="background-grid">
+          <div class="bg-option" data-bg="gradient1" onclick="setBackground('gradient1')">
+            <div class="bg-preview gradient1-preview"></div>
+            <span>Océano</span>
+          </div>
+          <div class="bg-option" data-bg="gradient2" onclick="setBackground('gradient2')">
+            <div class="bg-preview gradient2-preview"></div>
+            <span>Bosque</span>
+          </div>
+          <div class="bg-option" data-bg="gradient3" onclick="setBackground('gradient3')">
+            <div class="bg-preview gradient3-preview"></div>
+            <span>Púrpura</span>
+          </div>
+          <div class="bg-option" data-bg="gradient4" onclick="setBackground('gradient4')">
+            <div class="bg-preview gradient4-preview"></div>
+            <span>Dorado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de estadísticas -->
+  <div id="statsPanel" class="stats-panel hidden">
+    <div class="stats-header">
+      <h3>Tu Progreso Personal</h3>
+      <button onclick="closeStats()" class="close-btn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="stats-content">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-fire"></i>
+          </div>
+          <div class="stat-info">
+            <h4 id="streakCount">0</h4>
+            <p>Días consecutivos</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-book"></i>
+          </div>
+          <div class="stat-info">
+            <h4 id="totalReflections">0</h4>
+            <p>Reflexiones totales</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <div class="stat-info">
+            <h4 id="favoritesCount">0</h4>
+            <p>Favoritos</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="stat-info">
+            <h4 id="pointsCount">0</h4>
+            <p>Puntos</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="achievements-section">
+        <h4>Logros Recientes</h4>
+        <div id="achievementsList" class="achievements-list">
+          <!-- Los logros se cargarán dinámicamente -->
+        </div>
+      </div>
+      
+      <div class="export-section">
+        <h4>Exportar Reflexiones</h4>
+        <div class="export-buttons">
+          <button onclick="exportReflections('txt')" class="export-btn">
+            <i class="fas fa-file-alt"></i>
+            Texto
+          </button>
+          <button onclick="exportReflections('json')" class="export-btn">
+            <i class="fas fa-code"></i>
+            JSON
+          </button>
+          <button onclick="exportReflections('pdf')" class="export-btn">
+            <i class="fas fa-file-pdf"></i>
+            PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Diario de reflexiones -->
+  <div id="diaryPanel" class="diary-panel hidden">
+    <div class="diary-header">
+      <h3>Mi Diario de Reflexiones</h3>
+      <button onclick="closeDiary()" class="close-btn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="diary-content">
+      <div class="diary-filters">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="diarySearch" placeholder="Buscar en reflexiones..." oninput="filterDiary()">
+        </div>
+        <select id="diaryThemeFilter" onchange="filterDiary()">
+          <option value="">Todos los temas</option>
+          <option value="recibir">Recibir y merecer</option>
+          <option value="clientes">Clientes y acción</option>
+          <option value="bloqueos">Bloqueos y creencias</option>
+          <option value="gozo">Gozo y gratitud</option>
+          <option value="riqueza">Riqueza energética</option>
+        </select>
+      </div>
+      
+      <div id="diaryEntries" class="diary-entries">
+        <!-- Las entradas se cargarán dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="header-icon">
+        <i class="fas fa-star"></i>
+      </div>
+      <h1 id="saludo">Tu pregunta del día</h1>
+    </div>
+
+    <!-- FORMULARIO DE NOMBRE -->
+    <div id="nombreForm" class="nombre-form">
+      <div class="input-group">
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" id="nombreInput" placeholder="Escribe tu nombre" />
+      </div>
+      <button onclick="guardarNombre()" class="btn-primary">
+        <i class="fas fa-play"></i>
+        Comenzar
+      </button>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div id="contenidoPregunta" class="hidden">
+      <!-- Selector de categoría -->
+      <div class="selector-tema">
+        <label for="temaSelect">
+          <i class="fas fa-filter"></i>
+          Filtrar por tema:
+        </label>
+        <select id="temaSelect" onchange="filtrarPorTema()">
+          <option value="todas">Todas las categorías</option>
+          <option value="recibir">Recibir y merecer</option>
+          <option value="clientes">Clientes y acción</option>
+          <option value="bloqueos">Bloqueos y creencias</option>
+          <option value="gozo">Gozo y gratitud</option>
+          <option value="riqueza">Riqueza energética</option>
+        </select>
+      </div>
+
+      <!-- Pregunta con interacciones -->
+      <div class="pregunta-container">
+        <div class="pregunta-icon">
+          <i class="fas fa-lightbulb"></i>
+        </div>
+        <p class="pregunta" id="pregunta"></p>
+        
+        <!-- Interacciones con el mensaje -->
+        <div class="message-interactions">
+          <button id="favoriteBtn" onclick="toggleFavorite()" class="interaction-btn">
+            <i class="far fa-heart"></i>
+            <span>Favorito</span>
+          </button>
+          <button onclick="getRandomMessage()" class="interaction-btn">
+            <i class="fas fa-random"></i>
+            <span>Nuevo mensaje</span>
+          </button>
+          <button onclick="expandQuote()" class="interaction-btn">
+            <i class="fas fa-quote-right"></i>
+            <span>Ver más</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mensaje del yo futuro -->
+      <div id="yoFuturo" class="yo-futuro"></div>
+
+      <!-- Modo espejo -->
+      <div class="modo-espejo">
+        <div class="reflexion-header">
+          <i class="fas fa-pen"></i>
+          <span>Tu reflexión de hoy</span>
+          <div class="word-counter" id="wordCounter">0 palabras</div>
+        </div>
+        <textarea 
+          id="reflexion" 
+          placeholder="Escribe tu reflexión de hoy aquí..." 
+          oninput="guardarReflexion()"
+          maxlength="500"
+        ></textarea>
+        <div class="auto-save-indicator" id="autoSaveIndicator">
+          <i class="fas fa-check"></i>
+          Guardado automáticamente
+        </div>
+      </div>
+
+      <!-- Compartir -->
+      <div class="compartir">
+        <button onclick="toggleShareOptions()" class="btn-share">
+          <i class="fas fa-share-alt"></i>
+          Compartir
+        </button>
+        
+        <!-- Opciones de compartir -->
+        <div id="shareOptions" class="share-options hidden">
+          <div class="share-header">
+            <h4>Compartir en:</h4>
+            <button onclick="closeShareOptions()" class="close-btn">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="share-buttons">
+            <button onclick="compartirEnRedSocial('whatsapp')" class="share-btn whatsapp">
+              <i class="fab fa-whatsapp"></i>
+              WhatsApp
+            </button>
+            <button onclick="compartirEnRedSocial('instagram')" class="share-btn instagram">
+              <i class="fab fa-instagram"></i>
+              Instagram
+            </button>
+            <button onclick="compartirEnRedSocial('facebook')" class="share-btn facebook">
+              <i class="fab fa-facebook"></i>
+              Facebook
+            </button>
+            <button onclick="compartirEnRedSocial('twitter')" class="share-btn twitter">
+              <i class="fab fa-twitter"></i>
+              Twitter
+            </button>
+            <button onclick="copiarTexto()" class="share-btn copy">
+              <i class="fas fa-copy"></i>
+              Copiar texto
+            </button>
+          </div>
+          <div class="share-templates">
+            <h4>Plantillas visuales:</h4>
+            <div class="template-options">
+              <button onclick="generarImagen('simple')" class="template-btn">
+                <i class="fas fa-image"></i>
+                Simple
+              </button>
+              <button onclick="generarImagen('elegant')" class="template-btn">
+                <i class="fas fa-crown"></i>
+                Elegante
+              </button>
+              <button onclick="generarImagen('colorful')" class="template-btn">
+                <i class="fas fa-palette"></i>
+                Colorida
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de progreso -->
+      <div class="progreso">
+        <div class="progreso-header">
+          <span>Progreso del día</span>
+          <span id="progresoPorcentaje">0%</span>
+        </div>
+        <div class="progreso-bar">
+          <div id="barraProgreso"></div>
+        </div>
+      </div>
+
+      <!-- Calendario de asistencia -->
+      <div class="calendario-section">
+        <div class="calendario-header">
+          <h3>Tu viaje de reflexión</h3>
+          <button onclick="openDiary()" class="btn-secondary">
+            <i class="fas fa-book-open"></i>
+            Ver diario
+          </button>
+        </div>
+        <div class="calendario" id="calendario"></div>
+      </div>
+
+      <!-- Retos diarios -->
+      <div class="daily-challenge">
+        <div class="challenge-header">
+          <i class="fas fa-target"></i>
+          <h4>Reto del día</h4>
+        </div>
+        <div id="dailyChallenge" class="challenge-content">
+          <!-- El reto se cargará dinámicamente -->
+        </div>
+        <button onclick="completeChallenge()" class="btn-challenge">
+          <i class="fas fa-check"></i>
+          Completar reto
+        </button>
+      </div>
+
+      <!-- Botón para cambiar nombre -->
+      <button class="cambiar" onclick="cambiarNombre()">
+        <i class="fas fa-user-edit"></i>
+        Cambiar nombre
+      </button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
